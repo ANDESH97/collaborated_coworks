@@ -25,12 +25,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.brownie.collaborated_cowork.R;
 import com.brownie.collaborated_cowork.adapters.MenuRecyclerViewAdapter;
 import com.brownie.collaborated_cowork.adapters.RecyclerViewAdapter;
 import com.brownie.collaborated_cowork.adapters.ReviewRecyclerViewAdapter;
 import com.brownie.collaborated_cowork.fragments.dialogs.BookingDetailsDialog;
+import com.brownie.collaborated_cowork.models.C2C;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -57,6 +59,12 @@ public class BottomSheetFragment extends Fragment implements View.OnClickListene
 
     private FloatingActionButton fab;
 
+    private C2C c2cData;
+
+    private TextView cafeName, cafeDesc;
+
+    private Double latitude, longitude;
+
     public BottomSheetFragment()
     {
 
@@ -67,6 +75,18 @@ public class BottomSheetFragment extends Fragment implements View.OnClickListene
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.bottom_sheet_fragment, container, false);
+
+        Bundle bundle = getArguments();
+        c2cData = (C2C) bundle.getSerializable("C2C_DATA");
+
+        cafeName = view.findViewById(R.id.bottom_cafe_name);
+        cafeDesc = view.findViewById(R.id.bottom_cafe_desc);
+
+        cafeName.setText(c2cData.getC2cName());
+        cafeDesc.setText(c2cData.getCafeDesc());
+
+        latitude = c2cData.getLatitude();
+        longitude = c2cData.getLongitude();
 
         getImages(view);
 
@@ -151,7 +171,7 @@ public class BottomSheetFragment extends Fragment implements View.OnClickListene
 
             case R.id.bottom_ll2:
             {
-                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + 12.9382518 + "," + 77.6247292);
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + latitude + "," + longitude);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null)

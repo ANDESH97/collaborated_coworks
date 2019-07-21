@@ -18,9 +18,18 @@ import androidx.viewpager.widget.ViewPager;
 import com.brownie.collaborated_cowork.R;
 import com.brownie.collaborated_cowork.adapters.RecyclerViewAdapter;
 import com.brownie.collaborated_cowork.adapters.TabAdapter;
+import com.brownie.collaborated_cowork.fragments.bottomsheet.BottomSheetFragment;
+import com.brownie.collaborated_cowork.models.C2C;
+import com.brownie.collaborated_cowork.retrofit.ApiClient;
+import com.brownie.collaborated_cowork.retrofit.ApiInterface;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements RecyclerViewAdapter.CafesAdapterListener {
 
@@ -33,6 +42,9 @@ public class HomeFragment extends Fragment implements RecyclerViewAdapter.CafesA
     //vars
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
+
+    private ApiInterface apiInterface;
+    private List<C2C> c2cList;
 
     private RecyclerViewAdapter adapter;
     private RecyclerView recyclerView;
@@ -61,8 +73,6 @@ public class HomeFragment extends Fragment implements RecyclerViewAdapter.CafesA
 
         SearchView svCafes = view.findViewById(R.id.svCafes);
 
-        getImages(view);
-
         svCafes.setActivated(true);
         svCafes.setQueryHint("Type your keyword here");
         svCafes.onActionViewExpanded();
@@ -85,14 +95,43 @@ public class HomeFragment extends Fragment implements RecyclerViewAdapter.CafesA
             }
         });
 
+        c2cList = new ArrayList<>();
+
+        apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<List<C2C>> call = apiInterface.getAllC2Cs();
+
+        call.enqueue(new Callback<List<C2C>>() {
+            @Override
+            public void onResponse(Call<List<C2C>> call, Response<List<C2C>> response) {
+                if(response.isSuccessful())
+                {
+                    Log.d(TAG, "onResponse: " + response.body());
+                    c2cList = response.body();
+                    getImages(view);
+                }
+                else
+                {
+                    Log.d(TAG, "onResponse: failed!");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<C2C>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+
+
         return view;
     }
 
     private void getImages(View view){
         Log.d(TAG, "initImageBitmaps: preparing bitmaps.");
 
-        mImageUrls.add("https://c1.staticflickr.com/welcome_img_5/4636/25316407448_de5fbf183d_o.jpg");
-        mNames.add("Havasu Falls");
+        /*mImageUrls.add("https://c1.staticflickr.com/welcome_img_5/4636/25316407448_de5fbf183d_o.jpg");
+        mNames.add("Havasu Cafe");*/
 
         mImageUrls.add("https://i.redd.it/tpsnoz5bzo501.jpg");
         mNames.add("Trondheim");
@@ -132,13 +171,13 @@ public class HomeFragment extends Fragment implements RecyclerViewAdapter.CafesA
         recyclerView = view.findViewById(R.id.nearby_recycler_view);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new RecyclerViewAdapter(getContext(), mNames, mImageUrls, this);
+        adapter = new RecyclerViewAdapter(getActivity(),c2cList, this);
         recyclerView.setAdapter(adapter);
 
         recyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().beginTransaction().add(R.id.fragment_container, new CafeDetailFragment()).addToBackStack(null).commit();
+                getFragmentManager().beginTransaction().add(R.id.fragment_container, new BottomSheetFragment()).addToBackStack(null).commit();
             }
         });
     }

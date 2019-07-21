@@ -1,6 +1,7 @@
 package com.brownie.collaborated_cowork.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +13,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brownie.collaborated_cowork.R;
 import com.brownie.collaborated_cowork.fragments.CafeDetailFragment;
+import com.brownie.collaborated_cowork.fragments.bottomsheet.BottomSheetFragment;
+import com.brownie.collaborated_cowork.models.C2C;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -30,18 +35,31 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> cafeNames = new ArrayList<>();
     private ArrayList<String> cafeImageUrls = new ArrayList<>();
     private ArrayList<String> itemsFiltered = new ArrayList<>();
+    private C2C c2cData;
+
+    private BottomSheetFragment bottomSheetFragment;
+
+    private List<C2C> dataset;
     private Context mContext;
 
     private CafesAdapterListener listener;
 
-    public RecyclerViewAdapter(Context mContext, ArrayList<String> cafeNames, ArrayList<String> cafeImageUrls, CafesAdapterListener listener) {
+    public RecyclerViewAdapter(Context mContext, List<C2C> c2cDataset, CafesAdapterListener listener)
+    {
+        this.mContext = mContext;
+        this.dataset = c2cDataset;
+        this.listener = listener;
+
+        bottomSheetFragment = new BottomSheetFragment();
+    }
+/*    public RecyclerViewAdapter(Context mContext, ArrayList<String> cafeNames, ArrayList<String> cafeImageUrls, CafesAdapterListener listener) {
         this.cafeNames = cafeNames;
         this.cafeImageUrls = cafeImageUrls;
         this.mContext = mContext;
 
         this.listener = listener;
         this.itemsFiltered = new ArrayList<>(cafeNames);
-    }
+    }*/
 
     @Override
     public void onClick(View v) {
@@ -61,19 +79,34 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull HomeViewHolder holder, int position) {
 
+        c2cData = dataset.get(position);
+
         Log.d(TAG, "onBindViewHolder: called.");
 
         Glide.with(mContext)
                 .asBitmap()
-                .load(cafeImageUrls.get(position))
+                .load(c2cData.getImageUrl())
                 .into(holder.cafeImage);
 
-        holder.cafeName.setText(cafeNames.get(position));
+        holder.cafeName.setText(c2cData.getC2cName());
+        holder.row_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FragmentManager fragmentManager = ((AppCompatActivity)mContext).getSupportFragmentManager();
+                Bundle c2cBundle = new Bundle();
+                c2cBundle.putSerializable("C2C_DATA", c2cData);
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, bottomSheetFragment).addToBackStack(null).commit();
+                bottomSheetFragment.setArguments(c2cBundle);
+
+                Log.d(TAG, "onClick: card row clicked! ");
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return cafeNames.size();
+        return dataset.size();
     }
 
     @Override
@@ -115,6 +148,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class HomeViewHolder extends RecyclerView.ViewHolder
     {
+        ConstraintLayout row_layout;
         ImageView cafeImage;
         TextView cafeName;
 
@@ -122,15 +156,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public HomeViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            row_layout = itemView.findViewById(R.id.card_row);
             cafeImage = itemView.findViewById(R.id.recycler_card_image);
             cafeName = itemView.findViewById(R.id.recycler_cafe_name);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            /*itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onSelected(itemsFiltered.get(getAdapterPosition()));
                 }
-            });
+            });*/
         }
     }
 

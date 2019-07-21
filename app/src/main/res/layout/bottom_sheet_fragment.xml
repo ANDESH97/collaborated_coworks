@@ -178,6 +178,7 @@
                 />
 
             <TextView
+                android:id="@+id/bottom_cafe_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Green apple is a dessert made by baking, with flour mango and egg as the main ingredients and tastes very nice. Good for breakfast."
