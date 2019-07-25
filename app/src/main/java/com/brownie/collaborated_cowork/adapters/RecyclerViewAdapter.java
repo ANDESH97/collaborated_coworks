@@ -27,7 +27,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.HomeViewHolder> implements View.OnClickListener, Filterable {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.HomeViewHolder> implements /*View.OnClickListener,*/ Filterable {
 
     private static final String TAG = "RecyclerViewAdapater";
 
@@ -49,8 +49,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.mContext = mContext;
         this.dataset = c2cDataset;
         this.listener = listener;
-
-        bottomSheetFragment = new BottomSheetFragment();
     }
 /*    public RecyclerViewAdapter(Context mContext, ArrayList<String> cafeNames, ArrayList<String> cafeImageUrls, CafesAdapterListener listener) {
         this.cafeNames = cafeNames;
@@ -61,12 +59,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.itemsFiltered = new ArrayList<>(cafeNames);
     }*/
 
-    @Override
+/*    @Override
     public void onClick(View v) {
         AppCompatActivity appCompatActivity = (AppCompatActivity) v.getContext();
         Fragment cafeDetail = new CafeDetailFragment();
         appCompatActivity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, cafeDetail).addToBackStack(null).commit();
-    }
+    }*/
 
     @NonNull
     @Override
@@ -77,9 +75,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HomeViewHolder holder, int position) {
-
-        c2cData = dataset.get(position);
+    public void onBindViewHolder(@NonNull HomeViewHolder holder, final int position) {
 
         Log.d(TAG, "onBindViewHolder: called.");
 
@@ -93,12 +89,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
 
+                c2cData = dataset.get(position);
                 FragmentManager fragmentManager = ((AppCompatActivity)mContext).getSupportFragmentManager();
                 Bundle c2cBundle = new Bundle();
                 c2cBundle.putSerializable("C2C_DATA", c2cData);
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, bottomSheetFragment).addToBackStack(null).commit();
                 bottomSheetFragment.setArguments(c2cBundle);
 
+                Log.d(TAG, "onClick: c2cData= " + c2cData);
                 Log.d(TAG, "onClick: card row clicked! ");
             }
         });
