@@ -7,10 +7,10 @@
         android:title="home"
         />
 
-    <item
+<!--    <item
         android:id="@+id/community"
         android:icon="@drawable/ic_community"
-        android:title="community"/>
+        android:title="community"/>-->
 
     <item
         android:id="@+id/bookings"

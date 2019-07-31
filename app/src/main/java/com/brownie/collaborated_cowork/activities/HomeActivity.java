@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.brownie.collaborated_cowork.R;
+import com.brownie.collaborated_cowork.fragments.AddOnServicesFragment;
 import com.brownie.collaborated_cowork.fragments.BookingFragment;
 import com.brownie.collaborated_cowork.fragments.BookmarksFragment;
 import com.brownie.collaborated_cowork.fragments.CalendarFragment;
@@ -26,7 +27,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
 
     // Fragment //
     private FragmentManager fragmentManager;
-    private Fragment searchFragment, homeFragment, bookmarksFragment, calendarFragment, active, bookingFragment, loginFragment, profileFragment, communityFragment;
+    private Fragment searchFragment, homeFragment, bookmarksFragment, calendarFragment, active, bookingFragment, loginFragment, profileFragment, communityFragment, addOnServicesFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         calendarFragment = new CalendarFragment();
         bookingFragment = new BookingFragment();
         loginFragment = new LoginFragment();
+        addOnServicesFragment = new AddOnServicesFragment();
         active = homeFragment;
     }
 
@@ -68,13 +70,13 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
 
         switch (id)
         {
-            case R.id.community:
+            /*case R.id.community:
             {
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, communityFragment).disallowAddToBackStack().commit();
-                /*fragmentManager.beginTransaction().hide(active).show(bookingFragment).commit();
-                active = bookingFragment;*/
+                *//*fragmentManager.beginTransaction().hide(active).show(bookingFragment).commit();
+                active = bookingFragment;*//*
                 return true;
-            }
+            }*/
 
             case R.id.home:
             {
@@ -95,7 +97,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
 
             case R.id.bookings:
             {
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, calendarFragment).disallowAddToBackStack().commit();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, addOnServicesFragment).disallowAddToBackStack().commit();
                 /*fragmentManager.beginTransaction().hide(active).show(calendarFragment).commit();
                 active = calendarFragment;*/
                 return true;
