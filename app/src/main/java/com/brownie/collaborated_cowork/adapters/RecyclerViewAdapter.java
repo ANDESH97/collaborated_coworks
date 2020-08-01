@@ -49,6 +49,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.mContext = mContext;
         this.dataset = c2cDataset;
         this.listener = listener;
+
+        this.bottomSheetFragment = new BottomSheetFragment();
     }
 /*    public RecyclerViewAdapter(Context mContext, ArrayList<String> cafeNames, ArrayList<String> cafeImageUrls, CafesAdapterListener listener) {
         this.cafeNames = cafeNames;
@@ -81,10 +83,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         Glide.with(mContext)
                 .asBitmap()
-                .load(c2cData.getImageUrl())
+                .load(dataset.get(position).getImageUrl())
                 .into(holder.cafeImage);
 
-        holder.cafeName.setText(c2cData.getC2cName());
+        holder.cafeName.setText(dataset.get(position).getC2cName());
         holder.row_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

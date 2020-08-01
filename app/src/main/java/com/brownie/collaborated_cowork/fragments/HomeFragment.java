@@ -159,6 +159,9 @@ public class HomeFragment extends Fragment implements RecyclerViewAdapter.CafesA
         mImageUrls.add("https://i.imgur.com/ZcLLrkY.jpg");
         mNames.add("Washington");
 
+        for(int i=0; i<c2cList.size(); i++) {
+            c2cList.get(i).setImageUrl(mImageUrls.get(i));
+        }
         initRecyclerView(view);
 
     }
